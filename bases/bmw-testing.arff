@@ -1,0 +1,10 @@
+@relation bmwreponses
+
+@attribute IncomeBracket {0,1,2,3,4,5,6,7}
+@attribute FirstPurchase numeric
+@attribute LastPurchase numeric
+@attribute responded {1,0}
+
+@data
+
+4,200210,200601,?
