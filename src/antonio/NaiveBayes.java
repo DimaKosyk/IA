@@ -1,66 +1,101 @@
 package antonio;
 
-public class NaiveBayes {
-	
-	private final int ATRIBUTO_CLASSE;  
+import java.util.HashMap;
 
-	private final int[][] trainingSet;
-	
-	public NaiveBayes(int[][] trainingSet) {
-		this.trainingSet = trainingSet;
-		ATRIBUTO_CLASSE = trainingSet[0].length - 1;
+public class NaiveBayes {
+
+	private final Instancia[] conjuntoDeTreinameto;
+	private final Object[] possiveisClasses;
+	private final HashMap<Object, Double> probabilidadesDasClasses;
+	private final int quantidadeDeAtributos;
+	private final HashMap<Object, Integer> quantidadesDeInstanciasDasClasses;
+
+	public NaiveBayes(Instancia[] conjuntoDeTreinameto,
+			Object[] possiveisClasses) {
+		// Inicializa os atributos privados
+		this.conjuntoDeTreinameto = conjuntoDeTreinameto;
+		this.possiveisClasses = possiveisClasses;
+		probabilidadesDasClasses = new HashMap<Object, Double>(
+				possiveisClasses.length);
+		quantidadeDeAtributos = conjuntoDeTreinameto[0].getAtributos().length;
+		quantidadesDeInstanciasDasClasses = new HashMap<Object, Integer>(
+				possiveisClasses.length);
+		// Conta quantas instâncias há em cada classe
+		for (Object classe : possiveisClasses) {
+			quantidadesDeInstanciasDasClasses.put(classe, 0);
+		}
+		for (Instancia instancia : conjuntoDeTreinameto) {
+			Object classeDaInstancia = instancia.getValor();
+			int novaQuantidadeDeInstanciasDaClasse = quantidadesDeInstanciasDasClasses
+					.get(classeDaInstancia) + 1;
+			quantidadesDeInstanciasDasClasses.put(classeDaInstancia,
+					novaQuantidadeDeInstanciasDaClasse);
+		}
+		// Calcula a probabilidade de cada classe
+		int quantidadeDeInstancias = conjuntoDeTreinameto.length;
+		for (Object classe : possiveisClasses) {
+			int quantidadeDeInstanciasDaClasse = quantidadesDeInstanciasDasClasses
+					.get(classe);
+			double probabilidadeDaClasse = quantidadeDeInstanciasDaClasse
+					/ (double) quantidadeDeInstancias;
+			probabilidadesDasClasses.put(classe, probabilidadeDaClasse);
+		}
 	}
-	
-	private double probabilidadeDaClasse(int classe) {
-		int numeroDeInstancias = 0, totalDeInstancias = trainingSet.length;
-		for (int i = 0; i < trainingSet.length; i++) {
-			int[] instancia = trainingSet[i];
-			if (instancia[ATRIBUTO_CLASSE] == classe) {
-				numeroDeInstancias++;
+
+	private double probabilidadeDaClasse(Object classe) {
+		return probabilidadesDasClasses.get(classe);
+	}
+
+	private int quantidadeDeInstanciasDaClasse(Object classe) {
+		return quantidadesDeInstanciasDasClasses.get(classe);
+	}
+
+	private double probabilidadeDaClasseDadoValorDoAtributo(Object classe,
+			int atributo, Object valorDoAtributo) {
+		int numeroDeInstanciasComValor = 0;
+		int numeroDeInstanciasDaClasse = quantidadeDeInstanciasDaClasse(classe);
+		if (numeroDeInstanciasDaClasse == 0) {
+			return 0; // Evita divisão por zero
+		}
+		for (Instancia instancia : conjuntoDeTreinameto) {
+			if (instancia.getValor().equals(classe)
+					&& instancia.getAtributos()[atributo]
+							.equals(valorDoAtributo)) {
+				numeroDeInstanciasComValor++;
 			}
 		}
-		return numeroDeInstancias / (double) totalDeInstancias;
+		return numeroDeInstanciasComValor / (double) numeroDeInstanciasDaClasse;
 	}
-	
-	private double probabilidadeDaClasseDadoValorDoAtributo(int classe, int atributo, int valorDoAtributo) {
-		int numeroDeInstancias = 0, numeroDeInstanciasDaClasse = 0;
-		for (int i = 0; i < trainingSet.length; i++) {
-			int[] instancia = trainingSet[i];
-			if (instancia[instancia.length - 1] == classe) {
-				numeroDeInstanciasDaClasse++;
-				if (instancia[atributo] == valorDoAtributo) {
-					numeroDeInstancias++;
-				}
-			}
-		}
-		return numeroDeInstancias / (double) numeroDeInstanciasDaClasse;
-	}
-	
-	private double probabilidadeDoResultado(int classe, int[] atributos) {
+
+	private double probabilidade(Instancia instancia, Object classe) {
+		Object[] atributos = instancia.getAtributos();
 		double probabilidade = 1;
-		for (int a = 0; a < atributos.length; a++) {
-			probabilidade = probabilidade * probabilidadeDaClasseDadoValorDoAtributo(classe, a, atributos[a]);
+		for (int a = 0; a < quantidadeDeAtributos; a++) {
+			double probabilidadeClasseAtributo = probabilidadeDaClasseDadoValorDoAtributo(
+					classe, a, atributos[a]);
+			if (probabilidadeClasseAtributo == 0) {
+				return 0; // Otimização
+			}
+			probabilidade = probabilidade * probabilidadeClasseAtributo;
 		}
 		probabilidade = probabilidade * probabilidadeDaClasse(classe);
 		return probabilidade;
 	}
-	
-	public int classificar(int[] atributos, int[] possiveisClasses) {
-		int classe = -1;
+
+	public Object classificar(Instancia instancia) {
+		Object classeFinal = null;
 		double probabilidade = 0;
-		for (int c = 0; c < possiveisClasses.length; c++) {
-			double probabilidadeDeSerAClasseAtual = probabilidadeDoResultado(possiveisClasses[c], atributos);
-			System.out.println("Probabilidade de ser a classe " + possiveisClasses[c] + " = " + probabilidadeDeSerAClasseAtual);
-			if (probabilidadeDeSerAClasseAtual > probabilidade) {
-				classe = c;
-				probabilidade = probabilidadeDeSerAClasseAtual;
+		for (Object classe : possiveisClasses) {
+			double probabilidadeDeSerEssaClasse = probabilidade(instancia,
+					classe);
+			System.out.println("Probabilidade de ser a classe " + classe
+					+ " = " + probabilidadeDeSerEssaClasse);
+			if (probabilidadeDeSerEssaClasse > probabilidade) {
+				classeFinal = classe;
+				probabilidade = probabilidadeDeSerEssaClasse;
 			}
 		}
-		if (classe == -1) {
-			return -1;
-		} else {
-			return possiveisClasses[classe];
-		}
+		return classeFinal;
 	}
-	
+
 }
