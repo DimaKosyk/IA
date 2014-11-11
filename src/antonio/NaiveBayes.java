@@ -4,27 +4,27 @@ import java.util.HashMap;
 
 public class NaiveBayes {
 
-	private final Instancia[] conjuntoDeTreinameto;
+	private final Instancia[] conjuntoDeTreinamento;
 	private final Object[] possiveisClasses;
 	private final HashMap<Object, Double> probabilidadesDasClasses;
 	private final int quantidadeDeAtributos;
 	private final HashMap<Object, Integer> quantidadesDeInstanciasDasClasses;
 
-	public NaiveBayes(Instancia[] conjuntoDeTreinameto,
+	public NaiveBayes(Instancia[] conjuntoDeTreinamento,
 			Object[] possiveisClasses) {
 		// Inicializa os atributos privados
-		this.conjuntoDeTreinameto = conjuntoDeTreinameto;
+		this.conjuntoDeTreinamento = conjuntoDeTreinamento;
 		this.possiveisClasses = possiveisClasses;
 		probabilidadesDasClasses = new HashMap<Object, Double>(
 				possiveisClasses.length);
-		quantidadeDeAtributos = conjuntoDeTreinameto[0].getAtributos().length;
+		quantidadeDeAtributos = conjuntoDeTreinamento[0].getAtributos().length;
 		quantidadesDeInstanciasDasClasses = new HashMap<Object, Integer>(
 				possiveisClasses.length);
 		// Conta quantas instâncias há em cada classe
 		for (Object classe : possiveisClasses) {
 			quantidadesDeInstanciasDasClasses.put(classe, 0);
 		}
-		for (Instancia instancia : conjuntoDeTreinameto) {
+		for (Instancia instancia : conjuntoDeTreinamento) {
 			Object classeDaInstancia = instancia.getValor();
 			int novaQuantidadeDeInstanciasDaClasse = quantidadesDeInstanciasDasClasses
 					.get(classeDaInstancia) + 1;
@@ -32,7 +32,7 @@ public class NaiveBayes {
 					novaQuantidadeDeInstanciasDaClasse);
 		}
 		// Calcula a probabilidade de cada classe
-		int quantidadeDeInstancias = conjuntoDeTreinameto.length;
+		int quantidadeDeInstancias = conjuntoDeTreinamento.length;
 		for (Object classe : possiveisClasses) {
 			int quantidadeDeInstanciasDaClasse = quantidadesDeInstanciasDasClasses
 					.get(classe);
@@ -57,7 +57,7 @@ public class NaiveBayes {
 		if (numeroDeInstanciasDaClasse == 0) {
 			return 0; // Evita divisão por zero
 		}
-		for (Instancia instancia : conjuntoDeTreinameto) {
+		for (Instancia instancia : conjuntoDeTreinamento) {
 			if (instancia.getValor().equals(classe)
 					&& instancia.getAtributos()[atributo]
 							.equals(valorDoAtributo)) {

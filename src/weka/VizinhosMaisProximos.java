@@ -38,6 +38,6 @@ public class VizinhosMaisProximos {
 		baseDeTeste.setClassIndex(baseDeTeste.numAttributes() - 1);
 		
 		int compraria = (int) vizinhosMaisProximos.classifyInstance(baseDeTeste.firstInstance());
-		System.out.println("\nCompraria a garantia estendida? " + (compraria == 1 ? "sim" : "não"));
+		System.out.println("\nCompraria a garantia estendida? " + (compraria == 0 ? "sim" : "não"));
 	}
 }
