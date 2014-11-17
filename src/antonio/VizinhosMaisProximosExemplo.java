@@ -29,7 +29,7 @@ public class VizinhosMaisProximosExemplo {
 				.read(arquivoDaBaseDeTreinamento);
 		baseDeTreinamento.setClassIndex(baseDeTreinamento.numAttributes() - 1);
 		final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TREINAMENTO = 100;
-		// final int NUMERO_DE_EXEMPLOS_CONSIDERADOS = baseDeTreinamento.numInstances(); // A base inteira
+		// final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TREINAMENTO = baseDeTreinamento.numInstances(); // A base inteira
 		final Instancia[] CONJUNTO_DE_TREINAMENTO = new Instancia[NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TREINAMENTO];
 
 		// Obtém os atributos e a classe de cada instância
@@ -39,8 +39,7 @@ public class VizinhosMaisProximosExemplo {
 		}
 
 		// Constrói o modelo
-		VizinhosMaisProximos vmp = new VizinhosMaisProximos(
-				CONJUNTO_DE_TREINAMENTO, 1);
+		VizinhosMaisProximos vmp = new VizinhosMaisProximos(CONJUNTO_DE_TREINAMENTO);
 
 		// Lê a base de dados de teste
 		String arquivoDaBaseDeTeste = "bases/seismic-bumps.arff";
@@ -50,6 +49,7 @@ public class VizinhosMaisProximosExemplo {
 		// Seleciona uma instância aleatória e testa
 		// final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TESTE = 100;
 		final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TESTE = baseDeTreinamento.numInstances(); // A base inteira
+		final int K = 2;
 		int i = new Random().nextInt(NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TESTE);
 		Instancia teste = converterInstanciaDoWeka(baseDeTeste.instance(i));
 		System.out
@@ -57,7 +57,7 @@ public class VizinhosMaisProximosExemplo {
 						+ Arrays.toString(teste.getAtributos()));
 		System.out.println("Classe esperada: "
 				+ ((Double) teste.getValor() == 0 ? "terremoto" : "explosão"));
-		double classe = (Double) vmp.classificar(teste);
+		double classe = (Double) vmp.classificar(teste, K);
 		System.out.println("Classe obtida: "
 				+ (classe == 0 ? "terremoto" : "explosão"));
 	}
