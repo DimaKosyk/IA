@@ -41,19 +41,25 @@ public class VizinhosMaisProximos {
 		}
 	}
 	
-	// private static final int P = 1; // Manhattan distance
-	private static final int P = 2; // Euclidean distance
+	// private static final int P_PADRAO = 1; // Manhattan distance
+	private static final int P_PADRAO = 2; // Euclidean distance
 	
 	private final Instancia[] conjuntoDeTreinamento;
+	private final int p;
 	private final int quantidadeDeAtributos;
 
 	public VizinhosMaisProximos(Instancia[] conjuntoDeTreinamento) {
+		this(conjuntoDeTreinamento, P_PADRAO);
+	}
+	
+	public VizinhosMaisProximos(Instancia[] conjuntoDeTreinamento, int p) {
 		this.conjuntoDeTreinamento = conjuntoDeTreinamento;
+		this.p = p;
 		quantidadeDeAtributos = conjuntoDeTreinamento[0].getAtributos().length;
 	}
 	
 	private double distancia(Instancia instancia1, Instancia instancia2) {
-		return distancia(instancia1, instancia2, P);
+		return distancia(instancia1, instancia2, p);
 	}
 	
 	private double distancia(Instancia instancia1, Instancia instancia2, int p) {

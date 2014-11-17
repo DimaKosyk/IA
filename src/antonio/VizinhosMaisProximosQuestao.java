@@ -27,6 +27,8 @@ public class VizinhosMaisProximosQuestao {
 
 	public static void main(String[] args) throws Exception {
 		// Parâmetros
+		final int P = 1; // Manhattan distance
+		// final int P = 2; // Euclidean distance
 		final int PRIMEIRA_INSTANCIA_CONSIDERADA_NO_TREINAMENTO = 0;
 		final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TREINAMENTO = 1000;
 		// final int NUMERO_DE_INSTANCIAS_CONSIDERADAS_NO_TREINAMENTO =
@@ -52,8 +54,7 @@ public class VizinhosMaisProximosQuestao {
 		}
 
 		// Constroi o modelo
-		VizinhosMaisProximos vmp = new VizinhosMaisProximos(
-				CONJUNTO_DE_TREINAMENTO);
+		VizinhosMaisProximos vmp = new VizinhosMaisProximos(CONJUNTO_DE_TREINAMENTO, P);
 
 		// Lê a base de dados de teste
 		// String arquivoDaBaseDeTeste = "bases/seismic-bumps.arff";
