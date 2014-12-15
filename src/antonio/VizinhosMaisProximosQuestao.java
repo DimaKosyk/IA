@@ -122,6 +122,7 @@ public class VizinhosMaisProximosQuestao {
 		kVersusAcuracia.addLinePlot("k versus acurácia", eixoX2, eixoY2);
 		JFrame janela = new JFrame("k versus acurácia");
 		janela.setContentPane(kVersusAcuracia);
+		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		janela.setSize(500, 500);
 		janela.setVisible(true);
 	}
